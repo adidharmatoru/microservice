@@ -1,0 +1,41 @@
+# Go Binary
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Go test and benchmarking files
+*.test
+*.prof
+
+# Go Cover files
+*.cover
+
+# Go generated files
+*.pb.go
+
+# Go lint files
+*.lint
+
+# Go vendor directory
+/vendor/
+/tmp/
+
+# SQLite database file
+*.db
+
+# macOS specific files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# GoLand IDE files
+.idea/
+*.iml
+*.iws
+*.ipr
+*.iws
+*.ids
+.env
+

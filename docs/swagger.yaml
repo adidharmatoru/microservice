@@ -1,0 +1,213 @@
+basePath: /api/v1
+definitions:
+  api.PaginationResponse:
+    properties:
+      next:
+        type: string
+      previous:
+        type: string
+      total:
+        type: integer
+    type: object
+  models.User:
+    properties:
+      age:
+        type: integer
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    required:
+    - email
+    - name
+    type: object
+  v1.UsersResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.User'
+        type: array
+      pagination:
+        $ref: '#/definitions/api.PaginationResponse'
+    type: object
+host: passport.adidharmatoru.dev
+info:
+  contact: {}
+  description: Enter the JWT token with "Bearer " prefix
+  title: Passport Auth API
+  version: "1.0"
+paths:
+  /oauth/token:
+    post:
+      consumes:
+      - application/json
+      description: Generates a new JWT token for user authentication and authorization
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'token: <generated_token>'
+          schema:
+            type: object
+        "500":
+          description: 'message: Failed to generate JWT token'
+          schema:
+            type: object
+      summary: Generate a new JWT token
+      tags:
+      - authentication
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Get all users with optional filtering and pagination
+      parameters:
+      - description: Name
+        in: query
+        name: name
+        type: string
+      - description: Age
+        in: query
+        name: age
+        type: integer
+      - description: Comma-separated list of user IDs
+        in: query
+        name: ids
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.UsersResponse'
+      summary: Get all users
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Create a new user
+      parameters:
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Create a new user
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a user by id
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      summary: Delete a user
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: Get a single user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Get a single user by ID
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Update an existing user by id
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Update an existing user
+      tags:
+      - users
+  /users/dummy:
+    get:
+      consumes:
+      - application/json
+      description: Fetches users concurrently from dummy API with pagination
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.PaginationResponse'
+      summary: Test goroutine to fetch users
+      tags:
+      - users
+swagger: "2.0"

@@ -1,0 +1,31 @@
+name: Pull Request Build
+
+on:
+  pull_request:
+    branches:
+      - master
+      - staging
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build Docker image
+        run: |
+          cp env/.env.cicd .env
+          docker build -t core .
+
+      - name: Run Docker container
+        run: |
+          docker run -d --name app core
+
+      - name: Run tests
+        run: |
+          docker exec app flake8
+          docker exec app python manage.py test --noinput --verbosity 0
